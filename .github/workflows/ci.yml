@@ -1,0 +1,93 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run lint
+      - run: npm run format:check
+
+  typecheck:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run typecheck
+
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run test:unit
+
+  test-browser:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - run: npm run test:browser
+
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run build
+      - name: Verify dist/ output
+        run: |
+          test -f dist/index.js
+          test -f dist/index.d.ts
+          test -f dist/chess-js/index.js
+          test -f dist/chess-js/index.d.ts
+          test -f dist/style.css
+          test -f dist/base.css
+      - name: Typecheck the built package as a fresh consumer
+        run: |
+          npm pack --pack-destination /tmp
+          mkdir -p /tmp/consumer-check
+          cd /tmp/consumer-check
+          npm init -y
+          npm install /tmp/intermezzo-chessground-react-*.tgz react react-dom @lichess-org/chessground chess.js typescript @types/react @types/react-dom
+          cat > consumer.tsx <<'EOF'
+          import { Chessground, type ChessgroundProps } from '@intermezzo/chessground-react';
+          import { useChessGame } from '@intermezzo/chessground-react/chess-js';
+
+          const props: ChessgroundProps = { movable: { free: true, color: 'both' } };
+          void Chessground;
+          void useChessGame;
+          void props;
+          EOF
+          npx tsc --noEmit --jsx react-jsx --module esnext --moduleResolution bundler --strict consumer.tsx

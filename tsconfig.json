@@ -1,0 +1,38 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "useDefineForClassFields": true,
+    "lib": ["ES2023", "DOM", "DOM.Iterable"],
+    "module": "ESNext",
+    "skipLibCheck": true,
+
+    "moduleResolution": "bundler",
+    "allowImportingTsExtensions": true,
+    "isolatedModules": true,
+    "moduleDetection": "force",
+    "noEmit": true,
+    "jsx": "react-jsx",
+
+    "strict": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noFallthroughCasesInSwitch": true,
+    "noUncheckedIndexedAccess": true,
+
+    "paths": {
+      "@intermezzo/chessground-react": ["./src/index.ts"],
+      "@intermezzo/chessground-react/chess-js": ["./src/chess-js/index.ts"]
+    }
+  },
+  "include": [
+    "src",
+    "tests",
+    "demo/src",
+    "scripts",
+    "vite.config.ts",
+    "vitest.config.ts",
+    "vitest.unit.config.ts",
+    "vitest.browser.config.ts",
+    ".storybook"
+  ]
+}

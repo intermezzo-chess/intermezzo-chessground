@@ -1,0 +1,17 @@
+node_modules
+dist
+dist-storybook
+docs-api
+coverage
+*.local
+.DS_Store
+.env
+.env.*
+!.env.example
+test-results
+playwright-report
+blob-report
+.vitest-attachments
+storybook-static
+.vite
+.turbo

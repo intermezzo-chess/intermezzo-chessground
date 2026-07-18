@@ -1,0 +1,64 @@
+/* A minimal hand-written board/piece theme, overriding the bundled brown/cburnett assets on
+   this specific board via the higher-specificity `.custom-theme` class prefix. In a real app
+   you'd typically just import `@intermezzo/chessground-react/base.css` instead of
+   `.../style.css` and never load the bundled theme at all — see CustomTheme.tsx for why this
+   demo needs the override approach instead. */
+
+.custom-theme cg-board {
+  background-color: #eeeed2;
+  background-image: repeating-conic-gradient(#eeeed2 0% 25%, #7c9473 0% 50%);
+  background-size: 25% 25%;
+}
+
+.custom-theme piece {
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font:
+    bold 2.2vmin/1 system-ui,
+    sans-serif;
+}
+
+.custom-theme piece.pawn.white,
+.custom-theme piece.knight.white,
+.custom-theme piece.bishop.white,
+.custom-theme piece.rook.white,
+.custom-theme piece.queen.white,
+.custom-theme piece.king.white {
+  background: #fdfdfd;
+  background-image: none;
+  border: 2px solid #333;
+  color: #333;
+}
+
+.custom-theme piece.pawn.black,
+.custom-theme piece.knight.black,
+.custom-theme piece.bishop.black,
+.custom-theme piece.rook.black,
+.custom-theme piece.queen.black,
+.custom-theme piece.king.black {
+  background: #333;
+  background-image: none;
+  border: 2px solid #111;
+  color: #fdfdfd;
+}
+
+.custom-theme piece.pawn::after {
+  content: 'P';
+}
+.custom-theme piece.knight::after {
+  content: 'N';
+}
+.custom-theme piece.bishop::after {
+  content: 'B';
+}
+.custom-theme piece.rook::after {
+  content: 'R';
+}
+.custom-theme piece.queen::after {
+  content: 'Q';
+}
+.custom-theme piece.king::after {
+  content: 'K';
+}
