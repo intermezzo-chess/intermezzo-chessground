@@ -1,5 +1,5 @@
-import { Chessground } from '@intermezzo/chessground-react';
-import { useChessGame } from '@intermezzo/chessground-react/chess-js';
+import { Chessground } from '@intermezzo-chess/chessground-react';
+import { useChessGame } from '@intermezzo-chess/chessground-react/chess-js';
 
 export function LegalMoves() {
   const game = useChessGame();

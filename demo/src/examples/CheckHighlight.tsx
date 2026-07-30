@@ -1,4 +1,4 @@
-import { Chessground } from '@intermezzo/chessground-react';
+import { Chessground } from '@intermezzo-chess/chessground-react';
 
 // White's king on e1 is in check from the black rook on e8.
 const CHECK_FEN = '4r3/8/8/8/8/8/8/4K3 w - - 0 1';

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Chessground } from '@intermezzo/chessground-react';
+import { Chessground } from '@intermezzo-chess/chessground-react';
 
 export function ViewOnly() {
   const [viewOnly, setViewOnly] = useState(false);

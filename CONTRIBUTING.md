@@ -34,7 +34,7 @@ All four should pass — this mirrors what CI runs.
 - **Never call chessground's `Chessground(el, config)` constructor on every render.** It's constructed once on mount; every subsequent prop change goes through `api.set()` via `diffConfig` (`src/diffConfig.ts`), or — for the `viewOnly`/`drawable.visible` special case — an explicit destroy + reconstruct. Recreating the instance on a normal prop change destroys in-flight drag/selection/animation state.
 - **`diffConfig` is pure and React-free** — extend its test coverage (`tests/unit/diffConfig.test.ts`) directly when adding new special-cased fields, without needing to mount anything.
 - **Reuse chessground's own exported types** (`@lichess-org/chessground/{api,config,types,draw,fen}`) rather than redefining shapes — this is how the wrapper avoids drifting out of sync as chessground's own `Config`/`Api` evolve upstream.
-- **The `chess-js` integration must stay fully decoupled** from the core wrapper — `src/chess-js/` has zero imports from `@lichess-org/chessground` itself (only its type-only re-exports), so consumers who never import `@intermezzo/chessground-react/chess-js` never pull chess.js into their bundle.
+- **The `chess-js` integration must stay fully decoupled** from the core wrapper — `src/chess-js/` has zero imports from `@lichess-org/chessground` itself (only its type-only re-exports), so consumers who never import `@intermezzo-chess/chessground-react/chess-js` never pull chess.js into their bundle.
 
 ## Testing a real interaction manually
 

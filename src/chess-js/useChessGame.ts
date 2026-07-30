@@ -18,6 +18,23 @@ function toColor(turn: 'w' | 'b'): Color {
 }
 
 /**
+ * Attempts `input` (either coordinates or a SAN string) against `chess`. Returns the applied
+ * move's `[from, to]` on success, or `null` on an illegal/malformed move (chess.js throws for
+ * both — state is left unchanged either way, since a thrown `move()` never mutates the position).
+ */
+function applyMove(
+  chess: Chess,
+  input: string | { from: Key; to: Key; promotion: PromotionPiece },
+): [Key, Key] | null {
+  try {
+    const result = chess.move(input);
+    return [result.from as Key, result.to as Key];
+  } catch {
+    return null;
+  }
+}
+
+/**
  * A standalone chess-rules hook built on `chess.js` — legal moves, check/checkmate/stalemate
  * detection, and a `dests` map directly consumable as chessground's `movable.dests`. Has no
  * dependency on chessground itself; wiring it to `<Chessground>` is demonstrated in the
@@ -31,6 +48,7 @@ function toColor(turn: 'w' | 'b'): Color {
  *   fen={game.fen}
  *   turnColor={game.turnColor}
  *   check={game.inCheck ? game.turnColor : false}
+ *   lastMove={game.lastMove ?? undefined}
  *   movable={{
  *     color: game.turnColor,
  *     dests: game.dests,
@@ -46,6 +64,7 @@ export function useChessGame(options?: UseChessGameOptions): ChessGame {
   const [chess] = useState(() => new Chess(options?.fen));
   const [initialFen] = useState(() => options?.fen ?? DEFAULT_POSITION);
   const [fen, setFen] = useState(() => chess.fen());
+  const [lastMove, setLastMove] = useState<[Key, Key] | null>(null);
 
   const derived = useMemo(
     () => ({
@@ -58,30 +77,40 @@ export function useChessGame(options?: UseChessGameOptions): ChessGame {
       isGameOver: chess.isGameOver(),
     }),
     // `fen` is the only thing that ever changes; it's a reliable proxy for "the chess instance's
-    // internal state changed", since every mutating call below (`move`, `reset`) updates it.
+    // internal state changed", since every mutating call below (`move`, `moveSan`, `reset`)
+    // updates it.
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [chess, fen],
   );
 
-  const move = useCallback(
-    (orig: Key, dest: Key, promotion: PromotionPiece = 'q') => {
-      try {
-        chess.move({ from: orig, to: dest, promotion });
-      } catch {
-        return null;
-      }
+  const finishMove = useCallback(
+    (applied: [Key, Key] | null) => {
+      if (!applied) return null;
       const nextFen = chess.fen();
       setFen(nextFen);
+      setLastMove(applied);
       options?.onMove?.(nextFen);
       return nextFen;
     },
     [chess, options],
   );
 
+  const move = useCallback(
+    (orig: Key, dest: Key, promotion: PromotionPiece = 'q') =>
+      finishMove(applyMove(chess, { from: orig, to: dest, promotion })),
+    [chess, finishMove],
+  );
+
+  const moveSan = useCallback(
+    (san: string) => finishMove(applyMove(chess, san.trim())),
+    [chess, finishMove],
+  );
+
   const reset = useCallback(() => {
     chess.load(initialFen);
     setFen(chess.fen());
+    setLastMove(null);
   }, [chess, initialFen]);
 
-  return { fen, move, reset, chess, ...derived };
+  return { fen, move, moveSan, lastMove, reset, chess, ...derived };
 }

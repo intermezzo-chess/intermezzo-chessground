@@ -1,6 +1,6 @@
 /* A minimal hand-written board/piece theme, overriding the bundled brown/cburnett assets on
    this specific board via the higher-specificity `.custom-theme` class prefix. In a real app
-   you'd typically just import `@intermezzo/chessground-react/base.css` instead of
+   you'd typically just import `@intermezzo-chess/chessground-react/base.css` instead of
    `.../style.css` and never load the bundled theme at all — see CustomTheme.tsx for why this
    demo needs the override approach instead. */
 

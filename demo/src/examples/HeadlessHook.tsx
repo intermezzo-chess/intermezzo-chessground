@@ -1,5 +1,5 @@
 import { useRef } from 'react';
-import { useChessground } from '@intermezzo/chessground-react';
+import { useChessground } from '@intermezzo-chess/chessground-react';
 
 export function HeadlessHook() {
   const containerRef = useRef<HTMLDivElement>(null);

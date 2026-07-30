@@ -1,4 +1,4 @@
-import { Chessground } from '@intermezzo/chessground-react';
+import { Chessground } from '@intermezzo-chess/chessground-react';
 
 export function FreePlay() {
   return (

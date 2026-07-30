@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Chessground, type DrawShape } from '@intermezzo/chessground-react';
+import { Chessground, type DrawShape } from '@intermezzo-chess/chessground-react';
 
 export function DrawShapes() {
   const [shapes, setShapes] = useState<DrawShape[]>([]);

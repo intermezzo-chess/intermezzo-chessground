@@ -1,6 +1,6 @@
 {
-  "name": "@intermezzo/chessground-react",
-  "version": "0.1.0",
+  "name": "@intermezzo-chess/chessground-react",
+  "version": "1.0.0-alpha.0",
   "description": "A strongly-typed, idiomatic React wrapper for lichess.org's chessground chess board, with an optional chess.js integration.",
   "keywords": [
     "chess",
@@ -13,6 +13,18 @@
     "typescript"
   ],
   "license": "GPL-3.0-or-later",
+  "author": "loding@gmail.com",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/intermezzo-chess/chessground-react.git"
+  },
+  "homepage": "https://github.com/intermezzo-chess/chessground-react#readme",
+  "bugs": {
+    "url": "https://github.com/intermezzo-chess/chessground-react/issues"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
   "type": "module",
   "sideEffects": [
     "**/*.css"
@@ -71,6 +83,7 @@
     "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/react": "^16.3.2",
     "@testing-library/user-event": "^14.6.1",
+    "@types/node": "^26.1.2",
     "@types/react": "^19.2.17",
     "@types/react-dom": "^19.2.3",
     "@vitejs/plugin-react": "^6.0.3",

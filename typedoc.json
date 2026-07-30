@@ -2,7 +2,7 @@
   "$schema": "https://typedoc.org/schema.json",
   "entryPoints": ["src/index.ts", "src/chess-js/index.ts"],
   "out": "docs-api",
-  "name": "@intermezzo/chessground-react",
+  "name": "@intermezzo-chess/chessground-react",
   "readme": "README.md",
   "excludePrivate": true,
   "excludeInternal": true,

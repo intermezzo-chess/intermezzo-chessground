@@ -28,7 +28,7 @@ function warnIfZeroSize(container: HTMLElement): void {
   const rect = container.getBoundingClientRect();
   if (rect.width === 0 && rect.height === 0) {
     console.warn(
-      '[@intermezzo/chessground-react] The board container has zero width/height. Did you ' +
+      '[@intermezzo-chess/chessground-react] The board container has zero width/height. Did you ' +
         'forget to size it, e.g. <Chessground style={{ width: 400, height: 400 }} />?',
     );
   }

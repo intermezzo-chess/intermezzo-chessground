@@ -1,5 +1,5 @@
 import { useRef } from 'react';
-import { Chessground, type ChessgroundHandle } from '@intermezzo/chessground-react';
+import { Chessground, type ChessgroundHandle } from '@intermezzo-chess/chessground-react';
 
 export function OrientationFlip() {
   const ref = useRef<ChessgroundHandle>(null);

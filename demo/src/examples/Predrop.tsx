@@ -1,5 +1,9 @@
 import { useRef } from 'react';
-import { Chessground, type ChessgroundHandle, type Piece } from '@intermezzo/chessground-react';
+import {
+  Chessground,
+  type ChessgroundHandle,
+  type Piece,
+} from '@intermezzo-chess/chessground-react';
 
 const POCKET: Piece[] = [
   { role: 'pawn', color: 'white' },

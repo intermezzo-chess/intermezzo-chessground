@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { FreePlay } from './examples/FreePlay';
 import { LegalMoves } from './examples/LegalMoves';
+import { AlgebraicInput } from './examples/AlgebraicInput';
 import { Premove } from './examples/Premove';
 import { Predrop } from './examples/Predrop';
 import { DrawShapes } from './examples/DrawShapes';
@@ -14,6 +15,7 @@ import { HeadlessHook } from './examples/HeadlessHook';
 const examples = [
   { id: 'free-play', label: 'Free play', Component: FreePlay },
   { id: 'legal-moves', label: 'Legal moves (chess.js)', Component: LegalMoves },
+  { id: 'algebraic-input', label: 'Algebraic notation input', Component: AlgebraicInput },
   { id: 'premove', label: 'Premove', Component: Premove },
   { id: 'predrop', label: 'Predrop (crazyhouse-style)', Component: Predrop },
   { id: 'draw-shapes', label: 'Draw shapes', Component: DrawShapes },
@@ -32,7 +34,7 @@ export function App() {
   return (
     <div className="app">
       <header className="app-header">
-        <h1>@intermezzo/chessground-react</h1>
+        <h1>@intermezzo-chess/chessground-react</h1>
         <p>A live playground for every chessground feature exposed by this library.</p>
       </header>
       <div className="app-body">

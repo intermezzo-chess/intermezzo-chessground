@@ -16,8 +16,8 @@ import type { ChessgroundHandle, ChessgroundProps } from './types';
  * @example
  * ```tsx
  * import { useRef } from 'react';
- * import { Chessground, type ChessgroundHandle } from '@intermezzo/chessground-react';
- * import '@intermezzo/chessground-react/style.css';
+ * import { Chessground, type ChessgroundHandle } from '@intermezzo-chess/chessground-react';
+ * import '@intermezzo-chess/chessground-react/style.css';
  *
  * function Board() {
  *   const ref = useRef<ChessgroundHandle>(null);

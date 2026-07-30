@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react';
-import { Chessground, type ChessgroundHandle } from '@intermezzo/chessground-react';
-import { useChessGame } from '@intermezzo/chessground-react/chess-js';
+import { Chessground, type ChessgroundHandle } from '@intermezzo-chess/chessground-react';
+import { useChessGame } from '@intermezzo-chess/chessground-react/chess-js';
 
 export function Premove() {
   const game = useChessGame();

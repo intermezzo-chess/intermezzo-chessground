@@ -20,8 +20,8 @@
     "noUncheckedIndexedAccess": true,
 
     "paths": {
-      "@intermezzo/chessground-react": ["./src/index.ts"],
-      "@intermezzo/chessground-react/chess-js": ["./src/chess-js/index.ts"]
+      "@intermezzo-chess/chessground-react": ["./src/index.ts"],
+      "@intermezzo-chess/chessground-react/chess-js": ["./src/chess-js/index.ts"]
     }
   },
   "include": [

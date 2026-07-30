@@ -1,7 +1,7 @@
-# @intermezzo/chessground-react
+# @intermezzo-chess/chessground-react
 
-[![CI](https://img.shields.io/github/actions/workflow/status/intermezzo/chessground-react/ci.yml?branch=main&label=CI)](https://github.com/intermezzo/chessground-react/actions)
-[![npm version](https://img.shields.io/npm/v/%40intermezzo%2Fchessground-react.svg)](https://www.npmjs.com/package/@intermezzo/chessground-react)
+[![CI](https://img.shields.io/github/actions/workflow/status/intermezzo-chess/chessground-react/ci.yml?branch=main&label=CI)](https://github.com/intermezzo-chess/chessground-react/actions)
+[![npm version](https://img.shields.io/npm/v/%40intermezzo-chess%2Fchessground-react.svg)](https://www.npmjs.com/package/@intermezzo-chess/chessground-react)
 [![license: GPL-3.0-or-later](https://img.shields.io/badge/license-GPL--3.0--or--later-blue.svg)](./LICENSE)
 
 A strongly-typed, idiomatic React wrapper for [lichess.org's chessground](https://github.com/lichess-org/chessground) — the chess board that powers [lichess.org](https://lichess.org). Every field of chessground's `Config` and every method of its `Api` is exposed, with a design that stays faithful to chessground's own semantics rather than reinventing them.
@@ -17,10 +17,10 @@ A strongly-typed, idiomatic React wrapper for [lichess.org's chessground](https:
 ## Install
 
 ```sh
-npm install @intermezzo/chessground-react @lichess-org/chessground react react-dom
+npm install @intermezzo-chess/chessground-react @lichess-org/chessground react react-dom
 ```
 
-`@lichess-org/chessground`, `react`, and `react-dom` are peer dependencies — install them alongside this package. If you want the optional chess.js integration (`@intermezzo/chessground-react/chess-js`), also install `chess.js`:
+`@lichess-org/chessground`, `react`, and `react-dom` are peer dependencies — install them alongside this package. If you want the optional chess.js integration (`@intermezzo-chess/chessground-react/chess-js`), also install `chess.js`:
 
 ```sh
 npm install chess.js
@@ -29,8 +29,8 @@ npm install chess.js
 ## Quickstart
 
 ```tsx
-import { Chessground } from '@intermezzo/chessground-react';
-import '@intermezzo/chessground-react/style.css'; // required — see "Theming" below
+import { Chessground } from '@intermezzo-chess/chessground-react';
+import '@intermezzo-chess/chessground-react/style.css'; // required — see "Theming" below
 
 function Board() {
   return (
@@ -44,8 +44,8 @@ That's a fully interactive, unrestricted board — drag any piece anywhere. Ches
 ## Free play vs. legal moves
 
 ```tsx
-import { Chessground } from '@intermezzo/chessground-react';
-import { useChessGame } from '@intermezzo/chessground-react/chess-js';
+import { Chessground } from '@intermezzo-chess/chessground-react';
+import { useChessGame } from '@intermezzo-chess/chessground-react/chess-js';
 
 function LegalMovesBoard() {
   const game = useChessGame();
@@ -100,7 +100,7 @@ function LegalMovesBoard() {
 
 ```tsx
 import { useRef } from 'react';
-import { Chessground, type ChessgroundHandle } from '@intermezzo/chessground-react';
+import { Chessground, type ChessgroundHandle } from '@intermezzo-chess/chessground-react';
 
 const ref = useRef<ChessgroundHandle>(null);
 <Chessground ref={ref} /* ... */ />;
@@ -141,7 +141,7 @@ ref.current?.api?.setShapes([{ orig: 'e2', dest: 'e4', brush: 'green' }]);
 
 ```tsx
 import { useRef } from 'react';
-import { useChessground } from '@intermezzo/chessground-react';
+import { useChessground } from '@intermezzo-chess/chessground-react';
 
 function HeadlessBoard() {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -154,23 +154,50 @@ function HeadlessBoard() {
 
 ## `useChessGame` (optional)
 
-Import from the separate `@intermezzo/chessground-react/chess-js` entry point — nothing here pulls chess.js into your bundle unless you import this specifically.
+Import from the separate `@intermezzo-chess/chessground-react/chess-js` entry point — nothing here pulls chess.js into your bundle unless you import this specifically.
 
 ```ts
-import { useChessGame } from '@intermezzo/chessground-react/chess-js';
+import { useChessGame } from '@intermezzo-chess/chessground-react/chess-js';
 
 const game = useChessGame({ fen: 'optional starting FEN', onMove: (fen) => console.log(fen) });
 ```
 
-| Field                                                           | Type                                                                          | Description                                                                                             |
-| --------------------------------------------------------------- | ----------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------- |
-| `fen`                                                           | `FEN`                                                                         | Current position.                                                                                       |
-| `turnColor`                                                     | `Color`                                                                       | Side to move.                                                                                           |
-| `dests`                                                         | `Dests`                                                                       | Legal destinations for the side to move — feed straight into `movable.dests`.                           |
-| `inCheck`, `isCheckmate`, `isStalemate`, `isDraw`, `isGameOver` | `boolean`                                                                     |                                                                                                         |
-| `move`                                                          | `(orig: Key, dest: Key, promotion?: 'q' \| 'r' \| 'b' \| 'n') => FEN \| null` | Returns the resulting FEN on success, `null` (state unchanged) if illegal. Defaults to queen promotion. |
-| `reset`                                                         | `() => void`                                                                  | Restores the configured starting `fen` (or the standard start position).                                |
-| `chess`                                                         | `Chess`                                                                       | Escape hatch to the underlying chess.js instance.                                                       |
+| Field                                                           | Type                                                                          | Description                                                                                                                                                                           |
+| --------------------------------------------------------------- | ----------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `fen`                                                           | `FEN`                                                                         | Current position.                                                                                                                                                                     |
+| `turnColor`                                                     | `Color`                                                                       | Side to move.                                                                                                                                                                         |
+| `dests`                                                         | `Dests`                                                                       | Legal destinations for the side to move — feed straight into `movable.dests`.                                                                                                         |
+| `inCheck`, `isCheckmate`, `isStalemate`, `isDraw`, `isGameOver` | `boolean`                                                                     |                                                                                                                                                                                       |
+| `move`                                                          | `(orig: Key, dest: Key, promotion?: 'q' \| 'r' \| 'b' \| 'n') => FEN \| null` | Returns the resulting FEN on success, `null` (state unchanged) if illegal. Defaults to queen promotion.                                                                               |
+| `moveSan`                                                       | `(san: string) => FEN \| null`                                                | Same, but takes Standard Algebraic Notation (`"e4"`, `"Nf3"`, `"O-O"`, `"exd8=Q+"`) instead of coordinates — see [Keyboard-friendly move input](#keyboard-friendly-move-input) below. |
+| `lastMove`                                                      | `[Key, Key] \| null`                                                          | The `[from, to]` of the most recent move (via either `move` or `moveSan`), or `null` before any move — feeds directly into chessground's `lastMove` prop.                             |
+| `reset`                                                         | `() => void`                                                                  | Restores the configured starting `fen` (or the standard start position).                                                                                                              |
+| `chess`                                                         | `Chess`                                                                       | Escape hatch to the underlying chess.js instance.                                                                                                                                     |
+
+### Keyboard-friendly move input
+
+Chessground itself has no notation parsing — it only understands literal square names (`api.move('e2', 'e4')`), never `"e4"`. `moveSan` closes that gap by handing the string to chess.js's own SAN parser:
+
+```tsx
+function MoveInput() {
+  const game = useChessGame();
+  const [value, setValue] = useState('');
+
+  return (
+    <form
+      onSubmit={(e) => {
+        e.preventDefault();
+        if (game.moveSan(value) !== null) setValue('');
+      }}
+    >
+      <input value={value} onChange={(e) => setValue(e.target.value)} placeholder="e4" />
+      <button type="submit">Move</button>
+    </form>
+  );
+}
+```
+
+A plain text `<input>` is fully keyboard-operable on its own — no mouse or drag required — which makes this a genuine alternative move-input path for anyone who can't use chessground's own pointer-driven drag/click interaction (chessground has no keyboard support at all: its event binding only listens for `mousedown`/`touchstart`, never `keydown`). This is **not** a claim that the board itself is now fully accessible — the visual grid still has no ARIA semantics, focus management, or keyboard navigation of its own — just that a working, screen-reader-and-keyboard-friendly way to make moves exists alongside it. See the demo's [Algebraic notation input example](./demo/src/examples/AlgebraicInput.tsx) for a complete version with error feedback.
 
 ## Theming
 
@@ -178,10 +205,10 @@ Chessground ships exactly three CSS files: structural CSS (`chessground.base.css
 
 ```ts
 // Batteries-included: structural CSS + brown board + cburnett pieces
-import '@intermezzo/chessground-react/style.css';
+import '@intermezzo-chess/chessground-react/style.css';
 
 // Structural CSS only — bring your own board/piece theme
-import '@intermezzo/chessground-react/base.css';
+import '@intermezzo-chess/chessground-react/base.css';
 ```
 
 To bring your own theme with `base.css`, target chessground's own DOM/class conventions:

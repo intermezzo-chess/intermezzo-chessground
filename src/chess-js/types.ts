@@ -7,7 +7,7 @@ export type PromotionPiece = 'q' | 'r' | 'b' | 'n';
 export interface UseChessGameOptions {
   /** Starting position. Defaults to the standard chess starting position. */
   fen?: FEN;
-  /** Called after every successful call to `move()`, with the resulting FEN. */
+  /** Called after every successful call to `move()` or `moveSan()`, with the resulting FEN. */
   onMove?: (fen: FEN) => void;
 }
 
@@ -30,10 +30,23 @@ export interface ChessGame {
   isDraw: boolean;
   isGameOver: boolean;
   /**
-   * Attempts a move. Returns the resulting FEN on success, or `null` if the move is illegal
-   * (state is left unchanged). Promotion defaults to queen.
+   * Attempts a move given as coordinates. Returns the resulting FEN on success, or `null` if
+   * the move is illegal (state is left unchanged). Promotion defaults to queen.
    */
   move: (orig: Key, dest: Key, promotion?: PromotionPiece) => FEN | null;
+  /**
+   * Attempts a move given in Standard Algebraic Notation (e.g. `"e4"`, `"Nf3"`, `"O-O"`,
+   * `"exd8=Q+"`) — a keyboard-friendly alternative to drag-and-drop input, since chessground
+   * itself has no notation parsing at all. Returns the resulting FEN on success, or `null` if
+   * the string isn't a legal move in the current position (state is left unchanged either way).
+   * Promotion is encoded in the SAN string itself, so there's no separate parameter.
+   */
+  moveSan: (san: string) => FEN | null;
+  /**
+   * The `[from, to]` squares of the most recently applied move (via `move()` or `moveSan()`),
+   * or `null` before any move has been made — feeds directly into chessground's `lastMove` prop.
+   */
+  lastMove: [Key, Key] | null;
   /** Resets the game back to the configured starting `fen` (or the standard start position). */
   reset: () => void;
   /** Escape hatch: the underlying chess.js instance, for anything this hook doesn't expose. */

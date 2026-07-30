@@ -35,6 +35,13 @@ jobs:
 
   test:
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      # peerDependencies claims `react: ">=18"` — actually install and test against both the
+      # oldest supported major and the one used for day-to-day development, rather than only
+      # ever exercising whatever the devDependency happens to pin.
+      matrix:
+        react-version: [18, 19]
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -42,10 +49,16 @@ jobs:
           node-version: 22
           cache: npm
       - run: npm ci
+      - name: Install React ${{ matrix.react-version }}
+        run: npm install react@${{ matrix.react-version }} react-dom@${{ matrix.react-version }} --no-save
       - run: npm run test:unit
 
   test-browser:
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        react-version: [18, 19]
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -53,6 +66,8 @@ jobs:
           node-version: 22
           cache: npm
       - run: npm ci
+      - name: Install React ${{ matrix.react-version }}
+        run: npm install react@${{ matrix.react-version }} react-dom@${{ matrix.react-version }} --no-save
       - run: npx playwright install --with-deps chromium
       - run: npm run test:browser
 
@@ -80,10 +95,10 @@ jobs:
           mkdir -p /tmp/consumer-check
           cd /tmp/consumer-check
           npm init -y
-          npm install /tmp/intermezzo-chessground-react-*.tgz react react-dom @lichess-org/chessground chess.js typescript @types/react @types/react-dom
+          npm install /tmp/intermezzo-chess-chessground-react-*.tgz react react-dom @lichess-org/chessground chess.js typescript @types/react @types/react-dom
           cat > consumer.tsx <<'EOF'
-          import { Chessground, type ChessgroundProps } from '@intermezzo/chessground-react';
-          import { useChessGame } from '@intermezzo/chessground-react/chess-js';
+          import { Chessground, type ChessgroundProps } from '@intermezzo-chess/chessground-react';
+          import { useChessGame } from '@intermezzo-chess/chessground-react/chess-js';
 
           const props: ChessgroundProps = { movable: { free: true, color: 'both' } };
           void Chessground;

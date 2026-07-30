@@ -9,8 +9,11 @@ export default defineConfig({
   plugins: [react()],
   resolve: {
     alias: {
-      '@intermezzo/chessground-react/chess-js': resolve(__dirname, '../src/chess-js/index.ts'),
-      '@intermezzo/chessground-react': resolve(__dirname, '../src/index.ts'),
+      '@intermezzo-chess/chessground-react/chess-js': resolve(
+        __dirname,
+        '../src/chess-js/index.ts',
+      ),
+      '@intermezzo-chess/chessground-react': resolve(__dirname, '../src/index.ts'),
     },
   },
 });
