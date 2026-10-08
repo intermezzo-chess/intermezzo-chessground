@@ -27,7 +27,7 @@
   "include": [
     "src",
     "tests",
-    "demo/src",
+    "demo/standalone/src",
     "scripts",
     "vite.config.ts",
     "vitest.config.ts",

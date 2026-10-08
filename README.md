@@ -197,7 +197,7 @@ function MoveInput() {
 }
 ```
 
-A plain text `<input>` is fully keyboard-operable on its own — no mouse or drag required — which makes this a genuine alternative move-input path for anyone who can't use chessground's own pointer-driven drag/click interaction (chessground has no keyboard support at all: its event binding only listens for `mousedown`/`touchstart`, never `keydown`). This is **not** a claim that the board itself is now fully accessible — the visual grid still has no ARIA semantics, focus management, or keyboard navigation of its own — just that a working, screen-reader-and-keyboard-friendly way to make moves exists alongside it. See the demo's [Algebraic notation input example](./demo/src/examples/AlgebraicInput.tsx) for a complete version with error feedback.
+A plain text `<input>` is fully keyboard-operable on its own — no mouse or drag required — which makes this a genuine alternative move-input path for anyone who can't use chessground's own pointer-driven drag/click interaction (chessground has no keyboard support at all: its event binding only listens for `mousedown`/`touchstart`, never `keydown`). This is **not** a claim that the board itself is now fully accessible — the visual grid still has no ARIA semantics, focus management, or keyboard navigation of its own — just that a working, screen-reader-and-keyboard-friendly way to make moves exists alongside it. See the demo's [Algebraic notation input example](./demo/standalone/src/examples/AlgebraicInput.tsx) for a complete version with error feedback.
 
 ## Theming
 
@@ -223,7 +223,7 @@ To bring your own theme with `base.css`, target chessground's own DOM/class conv
 }
 ```
 
-See the demo app's [Custom theme example](./demo/src/examples/CustomTheme.tsx) for a complete, running version of this pattern.
+See the demo app's [Custom theme example](./demo/standalone/src/examples/CustomTheme.tsx) for a complete, running version of this pattern.
 
 ## Gotchas
 
@@ -238,7 +238,8 @@ No special handling needed. Chessground is only ever constructed inside a `useLa
 
 ## Demo & Storybook
 
-- `npm run demo` — a Vite + React playground covering free play, legal moves, premove, predrop, draw shapes, view-only, custom theming, orientation flip, check highlighting, animation toggling, and the headless hook. Aliased directly to `src/`, so it hot-reloads against the library's source with no build step in between.
+- `npm run demo:standalone` — a Vite + React playground covering free play, legal moves, premove, predrop, draw shapes, view-only, custom theming, orientation flip, check highlighting, animation toggling, and the headless hook. Aliased directly to `src/`, so it hot-reloads against the library's source with no build step in between.
+- `npm run demo:nextjs` — a real Next.js app that installs this package like any other consumer would (through the built `dist/` output and its `exports`/`sideEffects` fields, not aliased source). Exists to verify real-bundler behavior — in particular, that `style.css`'s import survives production tree-shaking under webpack, not just under this repo's own Vite-based tooling.
 - `npm run storybook` — a lighter interactive reference for the core `<Chessground>` component's main configuration axes.
 
 ## Contributing

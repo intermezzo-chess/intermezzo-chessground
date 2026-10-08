@@ -15,3 +15,11 @@ blob-report
 storybook-static
 .vite
 .turbo
+.next
+*.tsbuildinfo
+*.log
+.claude/*.lock
+.claude/settings.local.json
+.claude/sessions/
+.claude/todos/
+.claude/scheduled_tasks.*

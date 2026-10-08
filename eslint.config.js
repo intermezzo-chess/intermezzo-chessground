@@ -6,7 +6,15 @@ import eslintConfigPrettier from 'eslint-config-prettier';
 
 export default tseslint.config(
   {
-    ignores: ['dist', 'dist-storybook', 'docs-api', 'coverage', 'node_modules', 'storybook-static'],
+    ignores: [
+      'dist',
+      'dist-storybook',
+      'docs-api',
+      'coverage',
+      'node_modules',
+      'storybook-static',
+      'demo/nextjs',
+    ],
   },
   js.configs.recommended,
   ...tseslint.configs.recommended,

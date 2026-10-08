@@ -11,9 +11,9 @@ export default defineConfig({
     alias: {
       '@intermezzo-chess/chessground-react/chess-js': resolve(
         __dirname,
-        '../src/chess-js/index.ts',
+        '../../src/chess-js/index.ts',
       ),
-      '@intermezzo-chess/chessground-react': resolve(__dirname, '../src/index.ts'),
+      '@intermezzo-chess/chessground-react': resolve(__dirname, '../../src/index.ts'),
     },
   },
 });

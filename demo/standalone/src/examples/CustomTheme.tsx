@@ -5,8 +5,8 @@ export function CustomTheme() {
   return (
     <div>
       <p>
-        A small hand-written theme (<code>demo/src/examples/CustomTheme.css</code>) overrides the
-        bundled brown/cburnett assets on this board via a higher-specificity{' '}
+        A small hand-written theme (<code>demo/standalone/src/examples/CustomTheme.css</code>)
+        overrides the bundled brown/cburnett assets on this board via a higher-specificity{' '}
         <code>.custom-theme</code> class. In your own app you'd typically import{' '}
         <code>@intermezzo-chess/chessground-react/base.css</code> instead of{' '}
         <code>.../style.css</code> and skip the bundled theme entirely — this demo loads it globally
