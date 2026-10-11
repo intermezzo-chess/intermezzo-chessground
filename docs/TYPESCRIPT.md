@@ -64,10 +64,10 @@ Model states so invalid combinations are difficult to construct. Prefer:
 
 ```ts
 type RequestState<T> =
-  | { status: "idle" }
-  | { status: "loading" }
-  | { status: "success"; data: T }
-  | { status: "error"; error: Error };
+  | { status: 'idle' }
+  | { status: 'loading' }
+  | { status: 'success'; data: T }
+  | { status: 'error'; error: Error };
 ```
 
 over collections of booleans and optional properties that can contradict one
