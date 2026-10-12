@@ -1,4 +1,4 @@
-name: Release
+name: Version Packages
 
 on:
   push:
@@ -12,7 +12,6 @@ jobs:
     permissions:
       contents: write
       pull-requests: write
-      id-token: write
     steps:
       - uses: actions/checkout@v4
         with:
@@ -25,14 +24,7 @@ jobs:
 
       - run: npm ci
 
-      - run: npm run build
-
-      # Inert until an NPM_TOKEN secret is added to the repository: without it, Changesets
-      # still opens/updates the "Version Packages" PR, it just can't publish once merged.
-      - name: Create release PR or publish to npm
+      - name: Create or update version PR
         uses: changesets/action@v1
-        with:
-          publish: npm run release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
