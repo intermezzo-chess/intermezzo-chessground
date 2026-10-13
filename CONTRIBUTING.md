@@ -27,7 +27,7 @@ If a browser test is flaky or you're debugging drag geometry, `npm run demo:stan
 
 ## The Next.js demo (`demo/nextjs`)
 
-Unlike `demo/standalone` (which aliases straight to `src/*.ts` for hot-reload convenience), `demo/nextjs` is a separate Next.js app with that depends on `@intermezzo-chess/chessground-react` via `file:../..`. It exists to verify real-bundler (webpack, via Next.js) behavior that this repo's own Vite-based tooling can't exercise — most importantly, that the `style.css` import survives production tree-shaking rather than being silently stripped.
+Unlike `demo/standalone` (which aliases straight to `src/*.ts` for hot-reload convenience), `demo/nextjs` is a separate Next.js app that depends on `@intermezzo-chess/chessground-react` via `file:../..`. It exists to verify real-bundler (webpack, via Next.js) behavior that this repo's own Vite-based tooling can't exercise — most importantly, that the `style.css` import survives production tree-shaking rather than being silently stripped.
 
 Because of the `file:../..` dependency, **the root package must be built before `demo/nextjs` will have anything real to resolve**:
 
