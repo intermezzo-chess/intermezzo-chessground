@@ -14,8 +14,6 @@ npm run lint && npm run typecheck && npm run test:all && npm run build
 
 All four should pass — this mirrors what CI runs.
 
-
-
 ## Architecture notes
 
 - **Never call chessground's `Chessground(el, config)` constructor on every render.** It's constructed once on mount; every subsequent prop change goes through `api.set()` via `diffConfig` (`src/diffConfig.ts`), or — for the `viewOnly`/`drawable.visible` special case — an explicit destroy + reconstruct. Recreating the instance on a normal prop change destroys in-flight drag/selection/animation state.
