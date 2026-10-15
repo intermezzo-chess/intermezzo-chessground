@@ -1,4 +1,4 @@
-name: Release
+name: Version Packages
 
 on:
   push:
@@ -12,7 +12,6 @@ jobs:
     permissions:
       contents: write
       pull-requests: write
-      id-token: write
     steps:
       - uses: actions/checkout@v4
         with:
@@ -20,19 +19,19 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: 22
-          cache: npm
+          node-version-file: .nvmrc
+
+      - run: npm install --global npm@11.6.2
+      - uses: actions/cache@v4
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-npm-${{ hashFiles('package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-npm-
 
       - run: npm ci
 
-      - run: npm run build
-
-      # Inert until an NPM_TOKEN secret is added to the repository: without it, Changesets
-      # still opens/updates the "Version Packages" PR, it just can't publish once merged.
-      - name: Create release PR or publish to npm
+      - name: Create or update version PR
         uses: changesets/action@v1
-        with:
-          publish: npm run release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}

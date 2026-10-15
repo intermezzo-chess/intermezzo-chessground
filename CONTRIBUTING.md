@@ -2,25 +2,11 @@
 
 ## Setup
 
-```sh
-npm install
-```
+Use Node >=24 and the npm version specified in `package.json`. The project pins
+its development Node version in `.nvmrc`. Run `npm ci` from the repository root
+to install dependencies.
 
-## Scripts
-
-| Command                           | What it does                                                                                                                                                                                                                                                                           |
-| --------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `npm run build`                   | Builds the library (`dist/`) — JS, bundled `.d.ts`, and CSS.                                                                                                                                                                                                                           |
-| `npm run demo:standalone`         | Runs the Vite demo app against `src/` directly (no build step, hot-reloads).                                                                                                                                                                                                           |
-| `npm run demo:nextjs`             | Runs the Next.js demo app, which installs the package for real (via `dist/`, not aliased source) — see the note below.                                                                                                                                                                 |
-| `npm run storybook`               | Runs Storybook against `src/` directly.                                                                                                                                                                                                                                                |
-| `npm run lint`                    | ESLint.                                                                                                                                                                                                                                                                                |
-| `npm run format` / `format:check` | Prettier.                                                                                                                                                                                                                                                                              |
-| `npm run typecheck`               | `tsc --noEmit`.                                                                                                                                                                                                                                                                        |
-| `npm run test:unit`               | Vitest, jsdom, chessground mocked — wiring/lifecycle/prop-diffing correctness.                                                                                                                                                                                                         |
-| `npm run test:browser`            | Vitest Browser Mode (Playwright, real Chromium), real chessground — genuine drag/click/premove/draw-shape interaction coverage. jsdom stubs `getBoundingClientRect()` and can't simulate real pointer sequences, so this layer is required for anything touching actual drag geometry. |
-| `npm run test:all`                | Both test projects.                                                                                                                                                                                                                                                                    |
-| `npm run docs`                    | Generates the TypeDoc API reference into `docs-api/` (gitignored).                                                                                                                                                                                                                     |
+> **AI assistance:** Agentic development is welcome in this repository if you follow solid practices and your agents produce quality code. Have your agent read [AGENTS.md](AGENTS.md) before making changes. It is the repository's instruction entry point and links to the [TypeScript](docs/TYPESCRIPT.md), [React](docs/REACT.md), and [CSS](docs/CSS.md) conventions; follow each document relevant to the change. If you use [bb](https://getbb.app/), [.bb/AGENTS.md](.bb/AGENTS.md) handles everything for you. Repository-specific instructions take precedence over the supporting conventions. Review AI-assisted changes and run the same checks as any other contribution.
 
 ## Before opening a PR
 
@@ -43,7 +29,7 @@ If a browser test is flaky or you're debugging drag geometry, `npm run demo:stan
 
 ## The Next.js demo (`demo/nextjs`)
 
-Unlike `demo/standalone` (which aliases straight to `src/*.ts` for hot-reload convenience), `demo/nextjs` is a real, separately-scaffolded Next.js app with its own `package.json`/`node_modules`/lockfile that depends on `@intermezzo-chess/chessground-react` via `file:../..` — a genuine install resolving through the built `dist/` output and the package's `exports`/`sideEffects` fields, exactly like any other consumer. It exists specifically to verify real-bundler (webpack, via Next.js) behavior that this repo's own Vite-based tooling can't exercise — most importantly, that the `style.css` import survives production tree-shaking rather than being silently stripped.
+Unlike `demo/standalone` (which aliases straight to `src/*.ts` for hot-reload convenience), `demo/nextjs` is a separate Next.js app that depends on `@intermezzo-chess/chessground-react` via `file:../..`. It exists to verify real-bundler (webpack, via Next.js) behavior that this repo's own Vite-based tooling can't exercise — most importantly, that the `style.css` import survives production tree-shaking rather than being silently stripped.
 
 Because of the `file:../..` dependency, **the root package must be built before `demo/nextjs` will have anything real to resolve**:
 
@@ -58,6 +44,24 @@ npm run dev                # or `npm run build` for the production/tree-shaking 
 
 **Its `dev`/`build` scripts explicitly pass `--webpack`.** As of Next.js 16, Turbopack is the default bundler for both — since the entire point of this app is verifying _webpack's_ handling of the `sideEffects` field (the one bundler this repo's own Vite-based tooling can't exercise), leaving it on the default would silently test the wrong thing.
 
+And it's just kinda neat to have a full Next.js demo sitting here to play with!
+
 ## Releasing
 
-This repo uses [Changesets](https://github.com/changesets/changesets). Run `npm run changeset` after a change that should ship in the next release, and follow the prompts to describe it and pick a semver bump. `.github/workflows/release.yml` handles versioning and publishing once merged to `main` — see that workflow for the one-time `NPM_TOKEN` setup it expects.
+See [Releasing](docs/RELEASING.md) for the release steps and preparation checklist. Changesets must be created manually; version PRs are automatic; publishing is manual.
+
+## Scripts
+
+| Command                           | What it does                                                                                                                                                                                                                                                                           |
+| --------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `npm run build`                   | Builds the library (`dist/`) — JS, bundled `.d.ts`, and CSS.                                                                                                                                                                                                                           |
+| `npm run demo:standalone`         | Runs the Vite demo app against `src/` directly (no build step, hot-reloads).                                                                                                                                                                                                           |
+| `npm run demo:nextjs`             | Runs the Next.js demo app, which installs the package for real (via `dist/`, not aliased source) — see the note below.                                                                                                                                                                 |
+| `npm run storybook`               | Runs Storybook against `src/` directly.                                                                                                                                                                                                                                                |
+| `npm run lint`                    | ESLint.                                                                                                                                                                                                                                                                                |
+| `npm run format` / `format:check` | Prettier.                                                                                                                                                                                                                                                                              |
+| `npm run typecheck`               | `tsc --noEmit`.                                                                                                                                                                                                                                                                        |
+| `npm run test:unit`               | Vitest, jsdom, chessground mocked — wiring/lifecycle/prop-diffing correctness.                                                                                                                                                                                                         |
+| `npm run test:browser`            | Vitest Browser Mode (Playwright, real Chromium), real chessground — genuine drag/click/premove/draw-shape interaction coverage. jsdom stubs `getBoundingClientRect()` and can't simulate real pointer sequences, so this layer is required for anything touching actual drag geometry. |
+| `npm run test:all`                | Both test projects.                                                                                                                                                                                                                                                                    |
+| `npm run docs`                    | Generates the TypeDoc API reference into `docs-api/` (gitignored).                                                                                                                                                                                                                     |
