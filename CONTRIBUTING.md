@@ -2,7 +2,9 @@
 
 ## Setup
 
-Check out the repository, run `npm install` and you're ready to rock.
+Use Node >=24 and the npm version specified in `package.json`. The project pins
+its development Node version in `.nvmrc`. Run `npm ci` from the repository root
+to install dependencies.
 
 > **AI assistance:** Agentic development is welcome in this repository if you follow solid practices and your agents produce quality code. Have your agent read [AGENTS.md](AGENTS.md) before making changes. It is the repository's instruction entry point and links to the [TypeScript](docs/TYPESCRIPT.md), [React](docs/REACT.md), and [CSS](docs/CSS.md) conventions; follow each document relevant to the change. If you use [bb](https://getbb.app/), [.bb/AGENTS.md](.bb/AGENTS.md) handles everything for you. Repository-specific instructions take precedence over the supporting conventions. Review AI-assisted changes and run the same checks as any other contribution.
 
