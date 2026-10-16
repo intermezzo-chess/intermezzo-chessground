@@ -1,6 +1,6 @@
 import { createRef } from 'react';
 import { render, waitFor } from '@testing-library/react';
-import { describe, expect, it, vi } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 import { commands, userEvent } from 'vitest/browser';
 import { Chessground } from '../../src/Chessground';
 import type { ChessgroundHandle } from '../../src/types';
@@ -128,5 +128,73 @@ describe('<Chessground> real browser interaction', () => {
     await waitFor(() => {
       expect(onChange).toHaveBeenCalledWith([expect.objectContaining({ orig: 'e2', dest: 'e4' })]);
     });
+  });
+});
+
+// Chessground >=10.2 owns one ResizeObserver per instance and disconnects it in `destroy()`.
+// Recording real observers (rather than mocking `destroy()`) verifies that the wrapper destroys
+// every instance it retires, including the live one at unmount.
+function trackResizeObservers(): { disconnects: number }[] {
+  const records: { disconnects: number }[] = [];
+  class TrackingResizeObserver extends ResizeObserver {
+    private readonly record = { disconnects: 0 };
+
+    constructor(callback: ResizeObserverCallback) {
+      super(callback);
+      records.push(this.record);
+    }
+
+    override disconnect(): void {
+      this.record.disconnects += 1;
+      super.disconnect();
+    }
+  }
+  vi.stubGlobal('ResizeObserver', TrackingResizeObserver);
+  return records;
+}
+
+describe('<Chessground> ResizeObserver cleanup', () => {
+  afterEach(() => {
+    vi.unstubAllGlobals();
+  });
+
+  it('disconnects the observer on unmount', () => {
+    const observers = trackResizeObservers();
+    const { unmount } = render(
+      <Chessground style={{ width: BOARD_SIZE, height: BOARD_SIZE }} fen={START_FEN} />,
+    );
+    expect(observers).toEqual([{ disconnects: 0 }]);
+
+    unmount();
+
+    expect(observers).toEqual([{ disconnects: 1 }]);
+  });
+
+  it('keeps one observer across orientation changes', () => {
+    const observers = trackResizeObservers();
+    const { rerender } = render(
+      <Chessground style={{ width: BOARD_SIZE, height: BOARD_SIZE }} orientation="white" />,
+    );
+
+    rerender(<Chessground style={{ width: BOARD_SIZE, height: BOARD_SIZE }} orientation="black" />);
+
+    expect(observers).toEqual([{ disconnects: 0 }]);
+  });
+
+  it('disconnects each retired observer on recreation and the live one on unmount', () => {
+    const observers = trackResizeObservers();
+    const style = { width: BOARD_SIZE, height: BOARD_SIZE };
+    const { rerender, unmount } = render(
+      <Chessground style={style} viewOnly={false} drawable={{ visible: true }} />,
+    );
+
+    rerender(<Chessground style={style} viewOnly={true} drawable={{ visible: true }} />);
+    rerender(<Chessground style={style} viewOnly={true} drawable={{ visible: false }} />);
+
+    expect(observers).toEqual([{ disconnects: 1 }, { disconnects: 1 }, { disconnects: 0 }]);
+
+    unmount();
+
+    expect(observers).toEqual([{ disconnects: 1 }, { disconnects: 1 }, { disconnects: 1 }]);
   });
 });
