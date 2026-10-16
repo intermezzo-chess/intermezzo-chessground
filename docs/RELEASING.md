@@ -1,47 +1,57 @@
 # Releasing
 
-The first publication is planned as **1.0.0**, after [#5: Upgrade Chessground to the latest stable release](https://github.com/intermezzo-chess/intermezzo-chessground/issues/5) is complete. Do not run **Publish** before then. Alpha version preparation can happen without publishing to npm; this release hold is a maintainer decision and is not enforced by the workflow.
+Changesets prepares versions and changelogs through the **Version Packages** workflow. Publishing is a separate manual action on `main`; merging changes never publishes to npm.
 
-## Steps
+## Release requirements
 
-1. Run `npm run changeset`; select the version bump and describe the changes.
-2. Commit the generated `.changeset/*.md` file with your changes.
-3. Merge to `main`; wait for the [Version Packages workflow](../.github/workflows/release.yml) to open or update the version PR.
-4. Review the version and changelog in the **Version Packages** PR; merge it.
-5. Confirm CI passes on the `main` commit you intend to publish.
-6. Open GitHub **Actions → Publish → Run workflow**, select **main**, and run it.
-7. Confirm the [Publish workflow](../.github/workflows/publish.yml) succeeds and the expected npm version, Git tag, and GitHub release exist.
+- Use the Node version in `.nvmrc` and the npm version declared in `package.json`. Install dependencies with `npm ci`.
+- Review all changes since the previous release. Confirm the release scope, public exports, peer compatibility, runtime requirements, documentation, and any migration instructions.
+- Ensure `npm run lint`, `npm run format:check`, `npm run typecheck`, `npm run test:all`, and `npm run build` pass, along with CI for the commit being released.
+- Enable **Allow GitHub Actions to create and approve pull requests** in repository Actions settings. Configure an `NPM_TOKEN` repository secret with permission to publish the package.
 
-For an already prepared, unpublished version, start at step 5. Merging to `main` never publishes.
+## Prepare a release
 
-## Prerelease mode
+1. Run `npm run changeset` on your change branch. Choose patch for fixes, minor for compatible additions, or major for breaking changes, and describe the changes for the changelog.
+2. Commit the generated `.changeset/*.md` file with the changes and merge to `main`.
+3. Wait for the [Version Packages workflow](../.github/workflows/release.yml) to create or update the version PR. Review its proposed version and changelog against the intended release scope.
+4. Confirm CI passes and merge the version PR. The package version is now prepared for publication.
 
-The repository currently uses alpha prerelease mode: `.changeset/pre.json` contains `"mode": "pre"` and `"tag": "alpha"`. Follow steps 1–4 above to prepare alpha versions. Changesets moves versioned changesets into `.changeset/pre/` and retains them for the eventual stable changelog. Keep this history until Changesets consumes it during stable version preparation.
+Check `.changeset/pre.json` before preparing versions. If prerelease mode is active, follow the [prerelease process](#prereleases) for the intended release channel. For an already prepared, unpublished version, proceed directly to publishing.
 
-For a future prerelease cycle, run `npm run changeset -- pre enter alpha` on a branch based on `main`, then commit `.changeset/pre.json` and merge it before preparing versions. Do not run this command while already in prerelease mode. Entering prerelease mode does not change the package version or publish anything.
+## Publish a release
 
-If prerelease publication is intended in a future cycle, follow steps 5–7 after version preparation. Check `npm run changeset -- publish-plan` first: an alpha version suffix does not guarantee an alpha-only npm dist-tag. npm can assign `latest` on a package's first publication, and Changesets can subsequently plan prereleases under `latest` when only prerelease versions exist.
+1. Check out the prepared `main` commit, run `npm ci`, and confirm CI passes for that commit.
+2. Verify that version preparation is complete, build the package, inspect its contents, and check the publication plan:
 
-### Preparing stable 1.0.0
+   ```sh
+   node scripts/check-release-prepared.mjs
+   npm run build
+   npm pack --dry-run
+   npm run changeset -- publish-plan
+   ```
 
-After #5 is complete and its changes are merged:
+3. Confirm the package contains the expected JS, declarations, and CSS. Check that the plan names the intended unpublished package version, public access, and npm dist-tag (`latest` for a stable release).
+4. Open GitHub **Actions → Publish → Run workflow**, select **main**, and run it. The [Publish workflow](../.github/workflows/publish.yml) rejects pending version preparation and skips other branches; empty changesets do not block publication.
+5. Confirm the workflow succeeds and the expected npm version, dist-tags, Git tag, and GitHub release exist. Check npm dist-tags with `npm view @intermezzo-chess/chessground-react dist-tags`.
 
-1. On a branch based on the latest `main`, run `npm run changeset -- pre exit`. This changes `.changeset/pre.json` to `"mode": "exit"`; it does not prepare a stable version or publish anything.
-2. Commit `.changeset/pre.json` and merge it to `main`. Keep the changesets in `.changeset/pre/`; do not delete the prerelease state by hand.
-3. Wait for **Version Packages** to create or update the version PR. Confirm it prepares **1.0.0** without an alpha suffix, includes #5 and the retained prerelease history in the changelog, and removes the consumed prerelease state and changesets. Review CI and merge the version PR.
-4. On the prepared `main` commit, run `npm run changeset -- publish-plan`. Confirm `@intermezzo-chess/chessground-react@1.0.0`, public access, and the `latest` dist-tag, then follow steps 5–7 above.
+## Prereleases
+
+### Enter prerelease mode
+
+If `.changeset/pre.json` already has `"mode": "pre"` with the intended tag, start at step 3.
+
+1. Choose a channel, such as `alpha`, and run `npm run changeset -- pre enter alpha` on a branch based on `main`.
+2. Commit `.changeset/pre.json` and merge it to `main` before preparing versions. Entering prerelease mode does not change the package version or publish anything.
+3. Follow [Prepare a release](#prepare-a-release) for each prerelease. Confirm the proposed version has the intended prerelease suffix. Changesets retains versioned changesets in `.changeset/pre/` for the eventual stable changelog.
+4. Follow [Publish a release](#publish-a-release) when ready to publish the prepared prerelease. Check its npm dist-tag explicitly: a prerelease suffix alone does not establish the publication channel.
+
+npm can assign `latest` on a package's first publication. When only prerelease versions exist and `latest` is assigned, Changesets can plan subsequent prereleases under `latest` as well. Review the publish plan before publishing and registry dist-tags afterward.
+
+### Return to stable releases
+
+1. On a branch based on the latest `main`, run `npm run changeset -- pre exit`. This sets `"mode": "exit"` in `.changeset/pre.json`; it does not change the package version or publish anything.
+2. Commit `.changeset/pre.json` and merge it to `main`. Preserve `.changeset/pre/` until Changesets consumes the retained history.
+3. Review the **Version Packages** PR. Confirm the proposed stable version has no prerelease suffix, its changelog includes the relevant prerelease history and queued changes, and it removes consumed prerelease state and changesets. Confirm CI passes and merge it.
+4. Follow [Publish a release](#publish-a-release), checking that the stable publication plan uses `latest`.
 
 See the [Changesets prerelease guide](https://changesets.dev/guide/prereleases) for the upstream lifecycle.
-
-## Release considerations
-
-- **Scope:** include a changeset for each change that should ship; review all changes since the previous release.
-- **Version:** choose patch for fixes, minor for compatible additions, and major for breaking changes; document migration steps when needed.
-- **Release channel:** check `.changeset/pre.json` and the publish plan. Follow the [prerelease steps](#prerelease-mode) before preparing a stable release.
-- **Compatibility:** review public exports, peer dependencies, React support, and changes to runtime requirements.
-- **Documentation:** update README examples and API documentation for changed behavior; review the generated changelog.
-- **Checks:** run `npm run lint`, `npm run format:check`, `npm run typecheck`, `npm run test:all`, and `npm run build` from the repository root.
-- **Package contents:** run `npm pack --dry-run` after building; check JS, declarations, and CSS in `dist/`.
-- **Publish plan:** on the prepared `main` commit, run `npx changeset publish-plan`; check the package, version, and npm dist-tag it reports.
-- **Publish target:** the workflow publishes the selected `main` commit using the version in `package.json`; ensure that version is prepared and unpublished. Pending version changes block publishing; empty changesets do not. Other branches are skipped.
-- **Setup:** enable **Allow GitHub Actions to create and approve pull requests** in repository Actions settings; configure an `NPM_TOKEN` repository secret with permission to publish the package. The Publish workflow passes it to npm as `NODE_AUTH_TOKEN` through `actions/setup-node`.
