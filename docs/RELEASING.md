@@ -16,10 +16,11 @@ For an already prepared, unpublished version, start at step 5. Merging to `main`
 
 - **Scope:** include a changeset for each change that should ship; review all changes since the previous release.
 - **Version:** choose patch for fixes, minor for compatible additions, and major for breaking changes; document migration steps when needed.
-- **Release channel:** check `.changeset/pre.json`. While `mode` is `pre` and `tag` is `alpha`, releases remain alpha prereleases.
+- **Release channel:** check `.changeset/pre.json`. While `mode` is `pre` and `tag` is `alpha`, releases remain alpha prereleases. Changesets already released in the current prerelease are kept in `.changeset/pre/`; do not move, edit, or delete them.
 - **Compatibility:** review public exports, peer dependencies, React support, and changes to runtime requirements.
 - **Documentation:** update README examples and API documentation for changed behavior; review the generated changelog.
 - **Checks:** run `npm run lint`, `npm run format:check`, `npm run typecheck`, `npm run test:all`, and `npm run build` from the repository root.
 - **Package contents:** run `npm pack --dry-run` after building; check JS, declarations, and CSS in `dist/`.
-- **Publish target:** the workflow publishes the selected `main` commit using the version in `package.json`; ensure that version is prepared and unpublished. Pending version changes block publishing; other branches are skipped.
-- **Setup:** enable **Allow GitHub Actions to create and approve pull requests** in repository Actions settings; configure an `NPM_TOKEN` repository secret with permission to publish the package.
+- **Publish plan:** on the prepared `main` commit, run `npx changeset publish-plan`; check the package, version, and npm dist-tag it reports.
+- **Publish target:** the workflow publishes the selected `main` commit using the version in `package.json`; ensure that version is prepared and unpublished. Pending version changes block publishing; empty changesets do not. Other branches are skipped.
+- **Setup:** enable **Allow GitHub Actions to create and approve pull requests** in repository Actions settings; configure an `NPM_TOKEN` repository secret with permission to publish the package. The Publish workflow passes it to npm as `NODE_AUTH_TOKEN` through `actions/setup-node`.
