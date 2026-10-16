@@ -20,6 +20,7 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version-file: .nvmrc
+          registry-url: https://registry.npmjs.org
 
       - run: npm install --global npm@11.6.2
       - uses: actions/cache@v4
@@ -32,23 +33,14 @@ jobs:
       - run: npm ci
 
       - name: Require completed version preparation
-        run: |
-          node --input-type=module <<'NODE'
-          import getReleasePlan from '@changesets/get-release-plan';
-
-          const { changesets, releases } = await getReleasePlan(process.cwd());
-          if (changesets.length > 0 || releases.length > 0) {
-            console.error('Merge the Version Packages PR before publishing.');
-            process.exit(1);
-          }
-          NODE
+        run: node scripts/check-release-prepared.mjs
 
       - run: npm run build
 
       - name: Publish to npm
-        uses: changesets/action@v1
+        # The combined action skips publishing when only empty changesets remain.
+        uses: changesets/action/publish@v2
         with:
-          publish: npm run release
+          script: npm run release
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

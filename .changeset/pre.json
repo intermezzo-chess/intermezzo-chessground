@@ -1,8 +1,4 @@
 {
   "mode": "pre",
-  "tag": "alpha",
-  "initialVersions": {
-    "@intermezzo-chess/chessground-react": "0.1.0"
-  },
-  "changesets": ["initial-alpha-release"]
+  "tag": "alpha"
 }
