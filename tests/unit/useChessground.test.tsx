@@ -1,4 +1,4 @@
-import { useRef } from 'react';
+import { StrictMode, useRef } from 'react';
 import { render } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { useChessground } from '../../src/useChessground';
@@ -61,6 +61,51 @@ describe('useChessground', () => {
     unmount();
 
     expect(api.destroy).toHaveBeenCalledTimes(1);
+  });
+
+  it.each<[string, ChessgroundProps, ChessgroundProps]>([
+    ['viewOnly', { viewOnly: false }, { viewOnly: true }],
+    ['drawable.visible', { drawable: { visible: true } }, { drawable: { visible: false } }],
+  ])(
+    'destroys the retired and replacement instances once each after a %s recreation',
+    (_trigger, initial, next) => {
+      const { rerender, unmount } = render(<Harness chessgroundProps={initial} />);
+      rerender(<Harness chessgroundProps={next} />);
+
+      expect(mockApis).toHaveLength(2);
+      const [retired, replacement] = mockApis as [MockApi, MockApi];
+      expect(retired.destroy).toHaveBeenCalledTimes(1);
+      expect(replacement.destroy).not.toHaveBeenCalled();
+
+      unmount();
+
+      expect(retired.destroy).toHaveBeenCalledTimes(1);
+      expect(replacement.destroy).toHaveBeenCalledTimes(1);
+    },
+  );
+
+  it('destroys every instance exactly once under Strict Mode with repeated recreation', () => {
+    const { rerender, unmount } = render(
+      <StrictMode>
+        <Harness chessgroundProps={{ viewOnly: false }} />
+      </StrictMode>,
+    );
+    rerender(
+      <StrictMode>
+        <Harness chessgroundProps={{ viewOnly: true }} />
+      </StrictMode>,
+    );
+    rerender(
+      <StrictMode>
+        <Harness chessgroundProps={{ viewOnly: false }} />
+      </StrictMode>,
+    );
+    unmount();
+
+    expect(mockApis.length).toBeGreaterThan(1);
+    for (const api of mockApis) {
+      expect(api.destroy).toHaveBeenCalledTimes(1);
+    }
   });
 
   it('warns in dev when the container has zero width/height after mount', () => {

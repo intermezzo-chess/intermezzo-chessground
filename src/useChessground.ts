@@ -69,7 +69,9 @@ export function useChessground<T extends HTMLElement = HTMLElement>(
     props.onReady?.(instance);
 
     return () => {
-      instance.destroy();
+      // Destroy whichever instance is live now: the update effect may have replaced the one
+      // constructed above (viewOnly/drawable.visible recreation), and already destroyed it.
+      apiRef.current?.destroy();
       apiRef.current = null;
       appliedConfigRef.current = undefined;
       setApi(null);
