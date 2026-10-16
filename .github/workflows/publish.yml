@@ -38,8 +38,9 @@ jobs:
       - run: npm run build
 
       - name: Publish to npm
-        uses: changesets/action@v2
+        # The combined action skips publishing when only empty changesets remain.
+        uses: changesets/action/publish@v2
         with:
-          publish-script: npm run release
+          script: npm run release
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

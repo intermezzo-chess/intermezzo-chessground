@@ -54,11 +54,18 @@ describe('check-release-prepared', () => {
     expect(result.stderr).toContain('fixture@1.0.0-alpha.1');
   });
 
-  it('accepts an empty changeset, which plans no release', () => {
-    writeChangeset('empty', '');
+  it.each([false, true])(
+    'accepts an empty changeset, which plans no release (prerelease: %s)',
+    (prerelease) => {
+      if (prerelease) {
+        enterPre('pre');
+        writeChangeset('pre/initial-alpha-release', "'fixture': major\n");
+      }
+      writeChangeset('empty', '');
 
-    expect(check().status).toBe(0);
-  });
+      expect(check().status).toBe(0);
+    },
+  );
 
   it('rejects a pending prerelease exit', () => {
     enterPre('exit');
