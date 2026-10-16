@@ -1,6 +1,9 @@
 {
-  "$schema": "https://unpkg.com/@changesets/config@3.1.4/schema.json",
-  "changelog": ["@changesets/changelog-github", { "repo": "intermezzo-chess/chessground-react" }],
+  "$schema": "https://unpkg.com/@changesets/config@4.0.1/schema.json",
+  "changelog": [
+    "@changesets/changelog-github",
+    { "repo": "intermezzo-chess/intermezzo-chessground" }
+  ],
   "commit": false,
   "fixed": [],
   "linked": [],
