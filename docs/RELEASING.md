@@ -1,6 +1,6 @@
 # Releasing
 
-Changesets prepares versions and changelogs through the **Version Packages** workflow. Publishing is a separate manual action on `main`; merging changes never publishes to npm.
+Version preparation and publishing are separate manual actions on `main`. Run **Version Packages** to prepare versions and changelogs with Changesets, then **Publish** to publish the prepared version. Merging changes does not trigger either workflow.
 
 ## Release requirements
 
@@ -13,7 +13,7 @@ Changesets prepares versions and changelogs through the **Version Packages** wor
 
 1. Run `npm run changeset` on your change branch. Choose patch for fixes, minor for compatible additions, or major for breaking changes, and describe the changes for the changelog.
 2. Commit the generated `.changeset/*.md` file with the changes and merge to `main`.
-3. Wait for the [Version Packages workflow](../.github/workflows/release.yml) to create or update the version PR. Review its proposed version and changelog against the intended release scope.
+3. When ready to prepare a release, open GitHub **Actions → Version Packages → Run workflow**, select **main**, and run it. The [Version Packages workflow](../.github/workflows/release.yml) creates or updates the version PR and skips other branches. Review its proposed version and changelog against the intended release scope.
 4. Confirm CI passes and merge the version PR. The package version is now prepared for publication.
 
 Check `.changeset/pre.json` before preparing versions. If prerelease mode is active, follow the [prerelease process](#prereleases) for the intended release channel. For an already prepared, unpublished version, proceed directly to publishing.
@@ -51,7 +51,7 @@ npm can assign `latest` on a package's first publication. When only prerelease v
 
 1. On a branch based on the latest `main`, run `npm run changeset -- pre exit`. This sets `"mode": "exit"` in `.changeset/pre.json`; it does not change the package version or publish anything.
 2. Commit `.changeset/pre.json` and merge it to `main`. Preserve `.changeset/pre/` until Changesets consumes the retained history.
-3. Review the **Version Packages** PR. Confirm the proposed stable version has no prerelease suffix, its changelog includes the relevant prerelease history and queued changes, and it removes consumed prerelease state and changesets. Confirm CI passes and merge it.
+3. Open GitHub **Actions → Version Packages → Run workflow**, select **main**, and run it. Review the resulting version PR. Confirm the proposed stable version has no prerelease suffix, its changelog includes the relevant prerelease history and queued changes, and it removes consumed prerelease state and changesets. Confirm CI passes and merge it.
 4. Follow [Publish a release](#publish-a-release), checking that the stable publication plan uses `latest`.
 
 See the [Changesets prerelease guide](https://changesets.dev/guide/prereleases) for the upstream lifecycle.
