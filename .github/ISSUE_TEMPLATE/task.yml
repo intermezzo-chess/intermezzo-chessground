@@ -1,6 +1,6 @@
 name: Task
 description: Propose a discrete implementation or maintenance task.
-title: ""
+title: ''
 body:
   - type: textarea
     id: problem
