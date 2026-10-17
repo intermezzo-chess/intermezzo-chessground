@@ -1,6 +1,6 @@
 {
   "name": "@intermezzo-chess/chessground-react",
-  "version": "1.0.0-alpha.0",
+  "version": "1.0.0",
   "description": "A strongly-typed, idiomatic React wrapper for lichess.org's chessground chess board, with an optional chess.js integration.",
   "keywords": [
     "chess",
